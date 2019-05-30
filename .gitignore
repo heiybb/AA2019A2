@@ -32,5 +32,3 @@ hs_err_pid*
 .idea/workspace.xml
 aaAssign2.iml
 out/
-src/
-test/
