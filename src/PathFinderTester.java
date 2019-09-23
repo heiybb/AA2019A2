@@ -1,10 +1,12 @@
-import java.io.*;
-import java.util.*;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import map.Coordinate;
+import map.PathMap;
+import pathFinder.DijkstraPathFinder;
+import pathFinder.PathFinder;
 
-import map.*;
-import pathFinder.*;
+import java.io.*;
+import java.util.*;
 
 
 /**

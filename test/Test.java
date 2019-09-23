@@ -4,6 +4,9 @@ import map.PathMap;
 import java.util.*;
 
 public class Test {
+    public Test(int i, int i1) {
+    }
+
     public static void main(String[] args) {
         List<Coordinate> oriCells = new ArrayList<>();
         oriCells.add(new Coordinate(2, 0));

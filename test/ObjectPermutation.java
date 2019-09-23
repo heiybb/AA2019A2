@@ -1,14 +1,16 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class WayPointPermutation {
-    private static List<List<Object>> allPossible;
+public class ObjectPermutation {
+    private List<List<Object>> allPossible;
 
-    private WayPointPermutation(List<Object> objectList) {
+    private ObjectPermutation(List<Object> objectList) {
         allPossible = new ArrayList<>();
         perm(objectList, 0, objectList.size() - 1);
     }
 
-    private static void perm(List<Object> objectList, int start, int end) {
+    private void perm(List<Object> objectList, int start, int end) {
         if (start == end) {
             objectList.forEach(System.out::print);
             System.out.println();
@@ -32,8 +34,12 @@ public class WayPointPermutation {
         A.add("A");
         A.add("B");
         A.add("C");
+        A.add("D");
+        A.add("E");
+        A.add("F");
+        A.add("G");
 
-        List<List<Object>> test = new WayPointPermutation(A).getAllPossible();
+        List<List<Object>> test = new ObjectPermutation(A).getAllPossible();
 
         test.forEach(objects -> {
             objects.forEach(e->{
@@ -42,6 +48,7 @@ public class WayPointPermutation {
             });
             System.out.println();
         });
+        System.out.println(test.size());
 
     }
 }

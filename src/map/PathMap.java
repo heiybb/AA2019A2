@@ -1,9 +1,7 @@
 package map;
 
 import java.util.*;
-
-import map.StdDraw;
-import map.Coordinate;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Jeffrey Chan, Youhan Xia, Phuc Chu
@@ -29,6 +27,11 @@ public class PathMap {
     public List<Coordinate> destCells;
     // list of waypoint cells/coordinates
     public List<Coordinate> waypointCells;
+
+    // list of impassableCells
+    public List<Coordinate> impassableCells;
+
+
     // whether to visualise or not
     public boolean isVisu = true;
 
@@ -52,6 +55,7 @@ public class PathMap {
         originCells = oriCells;
         destCells = desCells;
         this.waypointCells = waypointCells;
+        this.impassableCells = new ArrayList<>(impassableCells);
 
         cells = new Coordinate[sizeR][sizeC];
 
@@ -120,8 +124,10 @@ public class PathMap {
      */
     public void draw() {
         // draw nothing if visualization is switched off
-        if (!isVisu)
+        if (!isVisu) {
             return;
+        }
+
 
         StdDraw.setCanvasSize(900, 900);
         StdDraw.setXscale(-1, sizeR + 1);
@@ -158,23 +164,64 @@ public class PathMap {
         // Draw coordinate boundaries
         StdDraw.setPenColor(StdDraw.BLACK);
 
+        //Draw the Vertical line
+        for (int r = 0; r <= sizeR; r++) {
+            int rr = r;
+            new Thread(() -> {
+                StdDraw.line(rr, 0, rr, sizeR);
+            }).start();
+        }
+
+        //Draw the Horizontal line
+        for (int c = 0; c <= sizeC; c++) {
+            int cc = c;
+            new Thread(() -> {
+                StdDraw.line(0, cc, sizeC, cc);
+            }).start();
+        }
+
+        AtomicInteger limit = new AtomicInteger(0);
+        //Draw the impassable cell block
+        new Thread(() -> {
+            for (int i = 0; i < impassableCells.size() / 3; i++) {
+                StdDraw.filledSquare(impassableCells.get(i).getColumn() + 0.5, impassableCells.get(i).getRow() + 0.5, 0.5);
+                limit.incrementAndGet();
+            }
+        }).start();
+        new Thread(() -> {
+            for (int i = impassableCells.size() / 3; i < impassableCells.size() / 3 + impassableCells.size() / 3; i++) {
+                StdDraw.filledSquare(impassableCells.get(i).getColumn() + 0.5, impassableCells.get(i).getRow() + 0.5, 0.5);
+                limit.incrementAndGet();
+            }
+        }).start();
+        new Thread(() -> {
+            for (int i = impassableCells.size() / 3 + impassableCells.size() / 3; i < impassableCells.size(); i++) {
+                StdDraw.filledSquare(impassableCells.get(i).getColumn() + 0.5, impassableCells.get(i).getRow() + 0.5, 0.5);
+                limit.incrementAndGet();
+            }
+        }).start();
+
+
         for (int r = 0; r < sizeR; r++) {
             for (int c = 0; c < sizeC; c++) {
-                // System.out.println(cells[r][c]);
-                StdDraw.line(c + 1, r, c + 1, r + 1);
-                StdDraw.line(c, r + 1, c + 1, r + 1);
-                StdDraw.line(c, r, c, r + 1);
-                StdDraw.line(c, r, c + 1, r);
-                // draw impassable cells
-                if (cells[r][c].getImpassable()) {
-                    StdDraw.filledSquare(c + 0.5, r + 0.5, 0.5);
-                }
-                // draw terrain costs
-                if (cells[r][c].getTerrainCost() > 1) {
-                    StdDraw.text(c + 0.5, r + 0.5, String.valueOf(cells[r][c].getTerrainCost()));
-                }
+                int r1 = r;
+                int c1 = c;
+                //Thread for drawing terrain costs
+                new Thread(() -> {
+                    if (cells[r1][c1].getTerrainCost() > 1) {
+                        StdDraw.text(c1 + 0.5, r1 + 0.5, String.valueOf(cells[r1][c1].getTerrainCost()));
+                    }
+                }).start();
             }
         }
+
+        while (limit.get() != impassableCells.size()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ignored) {
+            }
+        }
+
     } // end of draw()
 
 
@@ -185,8 +232,9 @@ public class PathMap {
      */
     public void drawPath(List<Coordinate> path) {
         // draw nothing if visualization is switched off
-        if (!isVisu)
+        if (!isVisu) {
             return;
+        }
 
         StdDraw.setPenColor(StdDraw.GREEN);
         StdDraw.setPenRadius(0.01);
@@ -195,12 +243,29 @@ public class PathMap {
         Coordinate currCell = null;
         if (it.hasNext()) {
             currCell = it.next();
+
             StdDraw.filledEllipse(currCell.getColumn() + 0.5, currCell.getRow() + 0.5, 0.3, 0.5);
             while (it.hasNext()) {
                 currCell = it.next();
                 StdDraw.filledEllipse(currCell.getColumn() + 0.5, currCell.getRow() + 0.5, 0.3, 0.5);
             }
+
+
         }
     } // end of drawPath()
+
+
+    public void drawCyan(Coordinate coo) {
+        StdDraw.setPenColor(StdDraw.CYAN);
+        StdDraw.setPenRadius(0.01);
+        StdDraw.filledSquare(coo.getColumn() + 0.5, coo.getRow() + 0.5,  0.5);
+    }
+
+    public void drawWhite(Coordinate coo) {
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.setPenRadius(0.01);
+        StdDraw.filledSquare(coo.getColumn() + 0.5, coo.getRow() + 0.5,  0.5);
+    }
+
 
 } // end of class PathMap

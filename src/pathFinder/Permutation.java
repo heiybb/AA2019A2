@@ -2,12 +2,19 @@ package pathFinder;
 
 import map.Coordinate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-class WayPointPermutation {
+/**
+ * Generate the Way Points Coordinate permutation for Task D
+ *
+ * @author Bobin Yuan s3677943@student.rmit.edu.au
+ */
+public class Permutation {
     private List<List<Coordinate>> allPossible;
 
-    WayPointPermutation(List<Coordinate> wayPointList) {
+    public Permutation(List<Coordinate> wayPointList) {
         this.allPossible = new ArrayList<>();
         perm(wayPointList, 0, wayPointList.size() - 1);
     }
@@ -25,7 +32,10 @@ class WayPointPermutation {
         }
     }
 
-    List<List<Coordinate>> getAllPossible() {
+    /**
+     * @return return all the possible mix
+     */
+    public List<List<Coordinate>> getAll() {
         return allPossible;
     }
 }

@@ -1,6 +1,6 @@
 package map;
 
-import java.util.*;
+import java.util.Objects;
 
 /**
  * @author Jeffrey Chan, Youhan Xia, Phuc Chu
